@@ -5,6 +5,7 @@ import "./ContactForm.scss";
 const ContactForm = ({ onSubmit }) => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -17,6 +18,13 @@ const ContactForm = ({ onSubmit }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const phonePattern = /^\+?[1-9]\d{1,14}$/;
+    if (!phonePattern.test(number)) {
+      setErrorMessage("Please enter a valid phone number.");
+      return;
+    }
+
+    setErrorMessage("");
     onSubmit({ name, number });
     setName("");
     setNumber("");
@@ -41,11 +49,13 @@ const ContactForm = ({ onSubmit }) => {
         type="tel"
         name="number"
         value={number}
+        pattern="^\+?[1-9]\d{1,14}$"
         onChange={handleChange}
         placeholder="Phone number"
         required
         autoComplete="tel"
       />
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       <button type="submit">Add contact</button>
     </form>
   );
